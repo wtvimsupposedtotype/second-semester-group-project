@@ -22,7 +22,7 @@
         <!-- Page content-->
         <div>
             <!-- Stats Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-5">
                 <!-- Card 1 -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                     <p class="text-sm font-medium text-slate-500">Total Products</p>
@@ -56,15 +56,35 @@
             </div>
         </div>
 
-        <!-- Recent Transactions Table Section -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
-            <div class="p-6 border-b border-slate-100">
-                <h3 class="text-lg font-bold text-slate-800">Recent Transactions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-5">
+            <!-- Sales Performance Section -->
+            <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="p-6 border-b border-slate-100">
+                    <h3 class="text-lg font-bold text-slate-800">Sales Performance</h3>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-400 italic">No recent sales data to display yet.</p>
+                </div>
             </div>
-            <div class="p-6">
-                <p class="text-slate-400 italic">No recent transactions to display yet.</p>
+
+            <!-- Recent Transactions Table Section -->
+            <div class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="p-6 border-b border-slate-100">
+                    <h3 class="text-lg font-bold text-slate-800">Recent Transactions</h3>
+                </div>
+                <div class="p-6">
+                    <p class="text-slate-400 italic">No recent transactions to display yet.</p>
+                </div>
             </div>
         </div>
+        <!-- Stock Alerts and Recommendations Table Section -->
+        <div class="lg:col-span-1 bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="p-6 border-b border-slate-100">
+                <h3 class="text-lg font-bold text-slate-800">Stock Alerts and Recommendations</h3>
+            </div>
+            <div class="p-6">
+                <p class="text-slate-400 italic">No recent alerts to display yet.</p>
+            </div>
         </div>
     </main>
     <script src="assets/js/script.js"></script>
