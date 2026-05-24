@@ -93,11 +93,14 @@
             <h2>Welcome Back</h2>
             <p>Please enter your credentials</p>
 
-            <input type="text" id="username" placeholder="Username / Email">
-            <input type="password" id="password" placeholder="Password">
+            <form action="actions/login_process.php" method="POST" style="display: flex; flex-direction: column; align-items: center;">
+                <input type="text" id="username" name="username" placeholder="Username">
+                <input type="password" id="password" name="password" placeholder="Password">
 
-            <button onclick="login('admin')">LOG IN AS ADMIN</button>
-            <button onclick="login('cashier')">LOG IN AS CASHIER</button>
+                <button type="submit" name="clicked_role" value="admin">LOG IN AS ADMIN</button>
+
+                <button type="submit" name="clicked_role" value="cashier">LOG IN AS CASHIER</button>
+            </form>
         </div>
 
     </div>

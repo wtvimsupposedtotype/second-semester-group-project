@@ -26,7 +26,19 @@
                 <!-- Card 1 -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                     <p class="text-sm font-medium text-slate-500">Total Products</p>
-                    <h3 class="text-2xl font-bold text-slate-800">1,284</h3>
+                    <p class="text-2xl font-bold text-slate-800">
+                        <?php
+                        // 1. Write the SQL query to count rows in the products table
+                        $sql = "SELECT COUNT(*) as total FROM products";
+                        $result = $conn->query($sql);
+
+                        // 2. Fetch the result count
+                        $row = $result->fetch_assoc();
+
+                        // 3. Print the number (it will print 0 if the table is empty)
+                        echo $row['total'];
+                        ?>
+                    </p>
                 </div>
                 <!-- Card 2 -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
