@@ -25,7 +25,7 @@ include 'includes/sidebar.php';
                     <span class="block w-6 h-0.5 bg-slate-600 mb-1"></span>
                     <span class="block w-6 h-0.5 bg-slate-600"></span>
                 </button>
-                <h1 class="text-xl font-bold text-slate-800">Point of Sale</h1>
+                <h1 class="text-xl font-bold text-slate-800">Logs</h1>
             </div>
         </header>
 
