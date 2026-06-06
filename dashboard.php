@@ -1,4 +1,7 @@
-<?php include 'includes/db.php';
+<?php
+include 'includes/db.php';
+include 'includes/auth.php';
+require_login(); // must be logged in to view the dashboard
 ?>
 <?php include 'includes/sidebar.php'; ?>
 <!DOCTYPE html>
@@ -51,8 +54,8 @@
                     <p class="text-sm font-medium text-slate-500">Total Revenue</p>
                     <p class="text-2xl font-bold text-slate-800">
                         <?php
-                        // 1. SQL query to SUM up the total_amount column
-                        $sql = "SELECT SUM(total_amount) as total_revenue FROM sales";
+                        // 1. Revenue = what was sold for, NET of tax (tax isn't ours to keep)
+                        $sql = "SELECT SUM(total_amount - tax_amount) as total_revenue FROM sales";
                         $result = $conn->query($sql);
                         $row = $result->fetch_assoc();
 
@@ -326,7 +329,7 @@
                                         </td>
 
                                         <td class="py-3 px-4 text-center">
-                                            <a href="manage-products.php?edit_id=<?php echo $product['id']; ?>"
+                                            <a href="inventory.php?edit_id=<?php echo $product['id']; ?>"
                                                 class="inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm">
                                                 Restock
                                             </a>

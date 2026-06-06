@@ -33,10 +33,17 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 Logs
             </a>
 
+            <?php if (($_SESSION['role'] ?? '') === 'admin'): ?>
             <a href="settings.php"
                 class="block py-2 px-4 rounded transition-colors <?php echo ($current_page == 'settings.php') ? 'bg-blue-600' : 'hover:bg-slate-700'; ?>">
                 Settings
             </a>
+
+            <a href="manage-cashiers.php"
+                class="block py-2 px-4 rounded transition-colors <?php echo ($current_page == 'manage-cashiers.php') ? 'bg-blue-600' : 'hover:bg-slate-700'; ?>">
+                Manage Cashiers
+            </a>
+            <?php endif; ?>
 
         </nav>
     </div>

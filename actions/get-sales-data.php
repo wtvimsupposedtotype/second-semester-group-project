@@ -2,16 +2,23 @@
 include '../includes/db.php';
 header('Content-Type: application/json');
 
+// Only logged-in users may read sales data. Anonymous requests get nothing.
+if (empty($_SESSION['logged_in'])) {
+    echo json_encode([]);
+    exit();
+}
+
 $data = [];
 
 try {
-    // total_amount = Revenue 
-    // (total_amount - total_cost) = Pure Profit
-    $sql = "SELECT DATE(sale_date) as sale_date, 
-                   SUM(total_amount) as daily_revenue,
-                   SUM(total_amount - buying_cost) as daily_profit
-            FROM sales 
-            GROUP BY sale_date 
+    // Revenue = selling price x qty.   Profit = (selling price - cost) x qty.
+    // Both are summed per day from the individual sale line items.
+    $sql = "SELECT DATE(s.sale_date) AS sale_date,
+                   SUM(si.price_each * si.quantity) AS daily_revenue,
+                   SUM((si.price_each - si.cost_each) * si.quantity) AS daily_profit
+            FROM sales s
+            JOIN sale_items si ON si.sale_id = s.id
+            GROUP BY DATE(s.sale_date)
             ORDER BY sale_date DESC LIMIT 7";
     $result = $conn->query($sql);
 

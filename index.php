@@ -93,6 +93,16 @@
             <h2>Welcome Back</h2>
             <p>Please enter your credentials</p>
 
+            <?php if (isset($_GET['error'])): ?>
+                <?php if ($_GET['error'] === 'pending_approval'): ?>
+                    <p style="color:#fbbf24; max-width:260px; text-align:center;">⏳ Your account is waiting for admin approval. Please try again later.</p>
+                <?php elseif ($_GET['error'] === 'access_denied'): ?>
+                    <p style="color:#f87171; max-width:260px; text-align:center;">🚫 You don't have permission to view that page.</p>
+                <?php else: ?>
+                    <p style="color:#f87171; max-width:260px; text-align:center;">❌ Invalid username or password.</p>
+                <?php endif; ?>
+            <?php endif; ?>
+
             <form action="actions/login_process.php" method="POST" style="display: flex; flex-direction: column; align-items: center;">
                 <input type="text" id="username" name="username" placeholder="Username">
                 <input type="password" id="password" name="password" placeholder="Password">
@@ -101,6 +111,10 @@
 
                 <button type="submit" name="clicked_role" value="cashier">LOG IN AS CASHIER</button>
             </form>
+
+            <p style="margin-top:16px; color:#94a3b8;">New cashier?
+                <a href="register.php" style="color:#38bdf8;">Create an account</a>
+            </p>
         </div>
 
     </div>

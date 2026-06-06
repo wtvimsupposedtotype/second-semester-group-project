@@ -1,5 +1,25 @@
 <?php
 include 'includes/db.php';
+include 'includes/auth.php';
+require_login(); // must be logged in to view reports
+
+// --- Summary numbers ---
+$total_revenue = $conn->query("SELECT SUM(total_amount - tax_amount) AS t FROM sales")->fetch_assoc()['t'] ?? 0; // net of tax
+$total_orders  = $conn->query("SELECT COUNT(*) AS c FROM sales")->fetch_assoc()['c'] ?? 0;
+$low_stock     = $conn->query("SELECT COUNT(*) AS c FROM products WHERE quantity <= low_stock_threshold")->fetch_assoc()['c'] ?? 0;
+
+// --- Monthly revenue for the current year (Jan..Dec), zero-filled ---
+$year    = date('Y');
+$monthly = array_fill(1, 12, 0); // months 1..12 default to 0
+$mq = $conn->query("SELECT MONTH(sale_date) AS m, SUM(total_amount - tax_amount) AS rev
+                    FROM sales
+                    WHERE YEAR(sale_date) = $year
+                    GROUP BY MONTH(sale_date)");
+while ($r = $mq->fetch_assoc()) {
+    $monthly[(int) $r['m']] = (float) $r['rev'];
+}
+$month_labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+$month_values = array_values($monthly);
 ?>
 <?php include 'includes/sidebar.php'; ?>
 <!DOCTYPE html>
@@ -33,19 +53,19 @@ include 'includes/db.php';
 
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                     <h3 class="text-sm font-medium text-slate-400 uppercase tracking-wider">Total Revenue</h3>
-                    <p class="text-2xl font-bold text-slate-800 mt-2">25,000.00 <span class="text-xs text-slate-400 font-normal">LKR</span></p>
+                    <p class="text-2xl font-bold text-slate-800 mt-2"><?php echo number_format($total_revenue, 2); ?> <span class="text-xs text-slate-400 font-normal">LKR</span></p>
                     <span class="text-xs text-emerald-500 font-medium mt-1 inline-block">✔ Live synced database</span>
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                     <h3 class="text-sm font-medium text-slate-400 uppercase tracking-wider">Total Orders</h3>
-                    <p class="text-2xl font-bold text-slate-800 mt-2">120</p>
+                    <p class="text-2xl font-bold text-slate-800 mt-2"><?php echo $total_orders; ?></p>
                     <span class="text-xs text-blue-500 font-medium mt-1 inline-block">Processed invoices</span>
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
                     <h3 class="text-sm font-medium text-slate-400 uppercase tracking-wider">Low Stock Items</h3>
-                    <p class="text-2xl font-bold text-red-600 mt-2">5 <span class="text-xs text-slate-400 font-normal">Items</span></p>
+                    <p class="text-2xl font-bold text-red-600 mt-2"><?php echo $low_stock; ?> <span class="text-xs text-slate-400 font-normal">Items</span></p>
                     <span class="text-xs text-amber-500 font-medium mt-1 inline-block">Requires reordering</span>
                 </div>
 
@@ -72,9 +92,9 @@ include 'includes/db.php';
                     const canvas = document.getElementById('reportsMonthlyChart');
                     if (!canvas || typeof Chart === 'undefined') return;
 
-                    // Mocking a clean monthly baseline trajectory for testing layout space
-                    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'];
-                    const values = [0, 0, 0, 0, 0, 0, 0]; // Will map to real data later
+                    // Real monthly revenue for the current year, pulled from the database
+                    const months = <?php echo json_encode($month_labels); ?>;
+                    const values = <?php echo json_encode($month_values); ?>;
 
                     new Chart(canvas, {
                         type: 'line',

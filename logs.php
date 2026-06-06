@@ -1,6 +1,20 @@
 <?php
 // Include your database connection file
 include 'includes/db.php';
+include 'includes/auth.php';
+require_login(); // must be logged in to view logs
+
+// Pull the newest 50 log entries, joined to the user who triggered them
+$logs = [];
+$res = $conn->query("SELECT l.action, l.timestamp, u.username, u.role
+                     FROM logs l
+                     LEFT JOIN users u ON l.user_id = u.id
+                     ORDER BY l.timestamp DESC
+                     LIMIT 50");
+while ($row = $res->fetch_assoc()) {
+    $logs[] = $row;
+}
+
 include 'includes/sidebar.php';
 ?>
 <!DOCTYPE html>
@@ -49,49 +63,67 @@ include 'includes/sidebar.php';
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-50 text-slate-700">
-                                <tr class="hover:bg-slate-50/50 transition-colors">
-                                    <td class="py-3 px-4 text-slate-500 font-mono">10:00 AM</td>
-                                    <td class="py-3 px-4"><span class="px-2 py-0.5 text-xs font-medium rounded bg-purple-50 text-purple-600 border border-purple-100">Admin</span></td>
-                                    <td class="py-3 px-4 font-medium text-slate-800">Invoice Generated</td>
-                                </tr>
-                                <tr class="hover:bg-slate-50/50 transition-colors">
-                                    <td class="py-3 px-4 text-slate-500 font-mono">10:30 AM</td>
-                                    <td class="py-3 px-4"><span class="px-2 py-0.5 text-xs font-medium rounded bg-emerald-50 text-emerald-600 border border-emerald-100">Cashier</span></td>
-                                    <td class="py-3 px-4 font-medium text-slate-800">Stock Updated</td>
-                                </tr>
-                                <tr class="hover:bg-slate-50/50 transition-colors">
-                                    <td class="py-3 px-4 text-slate-500 font-mono">11:00 AM</td>
-                                    <td class="py-3 px-4"><span class="px-2 py-0.5 text-xs font-medium rounded bg-purple-50 text-purple-600 border border-purple-100">Admin</span></td>
-                                    <td class="py-3 px-4 font-medium text-slate-800">Price Changed</td>
-                                </tr>
+                                <?php if (count($logs) === 0): ?>
+                                    <tr>
+                                        <td colspan="3" class="py-8 px-4 text-center text-slate-400 italic">
+                                            No activity logged yet. Actions like logins and sales will appear here.
+                                        </td>
+                                    </tr>
+                                <?php else: ?>
+                                    <?php foreach ($logs as $log): ?>
+                                        <?php
+                                            $role = $log['role'] ?? null;
+                                            if ($role === 'admin') {
+                                                $role_badge = 'bg-purple-50 text-purple-600 border-purple-100';
+                                                $role_text  = 'Admin';
+                                            } elseif ($role === 'cashier') {
+                                                $role_badge = 'bg-emerald-50 text-emerald-600 border-emerald-100';
+                                                $role_text  = 'Cashier';
+                                            } else {
+                                                $role_badge = 'bg-slate-100 text-slate-500 border-slate-200';
+                                                $role_text  = 'System';
+                                            }
+                                        ?>
+                                        <tr class="hover:bg-slate-50/50 transition-colors">
+                                            <td class="py-3 px-4 text-slate-500 font-mono">
+                                                <?php echo date('M d, h:i A', strtotime($log['timestamp'])); ?>
+                                            </td>
+                                            <td class="py-3 px-4">
+                                                <span class="px-2 py-0.5 text-xs font-medium rounded border <?php echo $role_badge; ?>">
+                                                    <?php echo $role_text; ?><?php echo $log['username'] ? ' · ' . htmlspecialchars($log['username']) : ''; ?>
+                                                </span>
+                                            </td>
+                                            <td class="py-3 px-4 font-medium text-slate-800">
+                                                <?php echo htmlspecialchars($log['action']); ?>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
-                    <h2 class="font-bold text-slate-800 text-lg mb-4">Audit Trail</h2>
+                    <h2 class="font-bold text-slate-800 text-lg mb-4">Recent Activity</h2>
 
                     <div class="space-y-3">
-                        <div class="flex items-start gap-3 p-3 rounded-lg bg-slate-50 border border-slate-100 text-sm text-slate-700">
-                            <span class="text-emerald-500 mt-0.5">✔</span>
-                            <p class="font-medium">Admin updated settings</p>
-                        </div>
-
-                        <div class="flex items-start gap-3 p-3 rounded-lg bg-slate-50 border border-slate-100 text-sm text-slate-700">
-                            <span class="text-emerald-500 mt-0.5">✔</span>
-                            <p class="font-medium">Invoice <span class="text-blue-600 font-semibold">#1024</span> Generated</p>
-                        </div>
-
-                        <div class="flex items-start gap-3 p-3 rounded-lg bg-slate-50 border border-slate-100 text-sm text-slate-700">
-                            <span class="text-emerald-500 mt-0.5">✔</span>
-                            <p class="font-medium">New cashier profile added</p>
-                        </div>
-
-                        <div class="flex items-start gap-3 p-3 rounded-lg bg-red-50/50 border border-red-100 text-sm text-slate-700">
-                            <span class="text-red-500 mt-0.5">⚠</span>
-                            <p class="font-medium text-red-800">Low stock alert generated</p>
-                        </div>
+                        <?php if (count($logs) === 0): ?>
+                            <p class="text-slate-400 text-sm italic">Nothing here yet.</p>
+                        <?php else: ?>
+                            <?php foreach (array_slice($logs, 0, 6) as $log): ?>
+                                <div class="flex items-start gap-3 p-3 rounded-lg bg-slate-50 border border-slate-100 text-sm text-slate-700">
+                                    <span class="text-emerald-500 mt-0.5">✔</span>
+                                    <div>
+                                        <p class="font-medium"><?php echo htmlspecialchars($log['action']); ?></p>
+                                        <p class="text-xs text-slate-400 mt-0.5">
+                                            <?php echo htmlspecialchars($log['username'] ?? 'System'); ?> ·
+                                            <?php echo date('M d, h:i A', strtotime($log['timestamp'])); ?>
+                                        </p>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </div>
                 </div>
 
