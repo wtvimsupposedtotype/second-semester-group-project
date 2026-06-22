@@ -45,6 +45,11 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </a>
             <?php endif; ?>
 
+            <a href="actions/logout.php"
+                class="block py-2 px-4 mt-8 rounded transition-colors bg-red-600 hover:bg-red-700 text-center">
+                Logout
+            </a>
+
         </nav>
     </div>
 </aside>
