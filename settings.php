@@ -56,20 +56,20 @@ $settings = get_settings($conn);
                         <div>
                             <label class="block text-sm font-medium text-slate-600 mb-1">Store/Company Name</label>
                             <input type="text" name="store_name"
-                                   value="<?php echo htmlspecialchars($settings['store_name'] ?? ''); ?>"
-                                   class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-slate-800">
+                                value="<?php echo htmlspecialchars($settings['store_name'] ?? ''); ?>"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-slate-800">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-600 mb-1">Currency Symbol</label>
                             <input type="text" name="currency"
-                                   value="<?php echo htmlspecialchars($settings['currency'] ?? ''); ?>"
-                                   class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-slate-800">
+                                value="<?php echo htmlspecialchars($settings['currency'] ?? ''); ?>"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-slate-800">
                         </div>
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-slate-600 mb-1">Business Address</label>
                             <input type="text" name="address"
-                                   value="<?php echo htmlspecialchars($settings['address'] ?? ''); ?>"
-                                   class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-slate-800">
+                                value="<?php echo htmlspecialchars($settings['address'] ?? ''); ?>"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-slate-800">
                         </div>
                     </div>
                 </div>
@@ -82,22 +82,63 @@ $settings = get_settings($conn);
                         <div>
                             <label class="block text-sm font-medium text-slate-600 mb-1">Default Tax Rate (%)</label>
                             <input type="number" step="0.01" name="tax_rate"
-                                   value="<?php echo htmlspecialchars($settings['tax_rate'] ?? '0'); ?>"
-                                   class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-slate-800">
+                                value="<?php echo htmlspecialchars($settings['tax_rate'] ?? '0'); ?>"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-slate-800">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-600 mb-1">Low Stock Threshold Alert</label>
                             <input type="number" name="low_stock_default"
-                                   value="<?php echo htmlspecialchars($settings['low_stock_default'] ?? '10'); ?>"
-                                   class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-slate-800">
+                                value="<?php echo htmlspecialchars($settings['low_stock_default'] ?? '10'); ?>"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-slate-800">
                             <p class="text-xs text-slate-400 mt-1">Default reorder point for new products.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-6">
+                    <h2 class="text-lg font-bold text-slate-800 mb-1">Low Stock Notifications (WhatsApp via Twilio)</h2>
+                    <p class="text-sm text-slate-400 mb-6">
+                        Sends an automatic WhatsApp message when you click "Notify" on a low-stock item.
+                        Get your Account SID, Auth Token, and Sandbox number from
+                        <a href="https://console.twilio.com" target="_blank" class="text-blue-600 hover:underline">console.twilio.com</a>.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-600 mb-1">Twilio Account SID</label>
+                            <input type="text" name="twilio_sid"
+                                value="<?php echo htmlspecialchars($settings['twilio_sid'] ?? ''); ?>"
+                                placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-slate-800">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-600 mb-1">Twilio Auth Token</label>
+                            <input type="password" name="twilio_token"
+                                value="<?php echo htmlspecialchars($settings['twilio_token'] ?? ''); ?>"
+                                placeholder="Your Twilio auth token"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-slate-800">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-600 mb-1">Twilio WhatsApp "From" Number</label>
+                            <input type="text" name="twilio_whatsapp_from"
+                                value="<?php echo htmlspecialchars($settings['twilio_whatsapp_from'] ?? '14155238886'); ?>"
+                                placeholder="14155238886 (sandbox default, no + or spaces)"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-slate-800">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-600 mb-1">Notify This WhatsApp Number</label>
+                            <input type="text" name="notify_phone"
+                                value="<?php echo htmlspecialchars($settings['notify_phone'] ?? ''); ?>"
+                                placeholder="e.g. 94771234567 (country code, no + or spaces)"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-slate-800">
+                            <p class="text-xs text-slate-400 mt-1">Must have joined your Twilio sandbox first (send the join code from this number).</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex justify-end">
                     <button type="submit"
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-bold shadow-md shadow-blue-200 transition-colors">
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-bold shadow-md shadow-blue-200 transition-colors">
                         Save Changes
                     </button>
                 </div>
@@ -110,15 +151,15 @@ $settings = get_settings($conn);
 
                 <div class="flex flex-wrap gap-4">
                     <button type="button"
-                            onclick="alert('To back up your database, open phpMyAdmin → select inventory_system → Export tab.');"
-                            class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium transition-colors text-sm">
+                        onclick="alert('To back up your database, open phpMyAdmin → select inventory_system → Export tab.');"
+                        class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium transition-colors text-sm">
                         Export Database Backup (.sql)
                     </button>
 
                     <form action="actions/clear_logs.php" method="POST" class="inline"
-                          onsubmit="return confirm('Permanently delete ALL system logs? This cannot be undone.');">
+                        onsubmit="return confirm('Permanently delete ALL system logs? This cannot be undone.');">
                         <button type="submit"
-                                class="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-lg font-medium transition-colors text-sm border border-red-200">
+                            class="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-lg font-medium transition-colors text-sm border border-red-200">
                             Clear System Logs
                         </button>
                     </form>
