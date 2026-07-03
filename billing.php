@@ -344,7 +344,7 @@ $products = $conn->query("SELECT id, name, sku, price, quantity FROM products OR
 
 <body class="bg-slate-50">
 
-    <main id="main-content" class="ml-64 min-h-screen transition-all duration-300 flex flex-col">
+    <main id="main-content" class="ml-64 h-screen overflow-hidden transition-all duration-300 flex flex-col">
         <header class="bg-white border-b border-slate-200 p-4 flex justify-between items-center sticky top-0 z-10">
             <div class="flex items-center gap-4">
                 <button id="toggle-btn" class="p-2 hover:bg-slate-100 rounded-lg">
