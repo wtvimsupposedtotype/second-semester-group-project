@@ -226,7 +226,7 @@ while ($row = $lsq->fetch_assoc()) {
                     <h2 class="text-lg font-bold text-slate-800 mb-4">
                         <?php echo $edit_product ? 'Edit Product' : 'Add New Product'; ?>
                     </h2>
-                    <form action="actions/product_actions.php" method="POST"
+                    <form action="actions/product_actions.php" method="POST" enctype="multipart/form-data"
                         class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="hidden" name="op" value="<?php echo $edit_product ? 'update' : 'add'; ?>">
                         <?php if ($edit_product): ?>
@@ -275,6 +275,20 @@ while ($row = $lsq->fetch_assoc()) {
                             <input type="number" name="low_stock_threshold"
                                 value="<?php echo htmlspecialchars($edit_product['low_stock_threshold'] ?? $default_threshold); ?>"
                                 class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-slate-600 mb-1">Product Picture</label>
+                            <div class="flex items-center gap-4">
+                                <?php if (!empty($edit_product['image']) && file_exists($edit_product['image'])): ?>
+                                    <img src="<?php echo htmlspecialchars($edit_product['image']); ?>"
+                                        alt="Current picture"
+                                        class="w-16 h-16 object-cover rounded-lg border border-slate-200">
+                                <?php endif; ?>
+                                <input type="file" name="image" accept="image/*"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:bg-blue-600 file:text-white file:cursor-pointer hover:file:bg-blue-700 focus:ring-2 focus:ring-blue-500 outline-none">
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">JPG, PNG, GIF or WEBP, up to 2&nbsp;MB.<?php echo $edit_product ? ' Leave empty to keep the current picture.' : ''; ?></p>
                         </div>
 
                         <div class="md:col-span-2 flex gap-3 justify-end pt-2">
@@ -369,7 +383,22 @@ while ($row = $lsq->fetch_assoc()) {
                                 }
                                 ?>
                                 <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="p-4 text-slate-800 font-medium"><?php echo htmlspecialchars($p['name']); ?></td>
+                                    <td class="p-4 text-slate-800 font-medium">
+                                        <div class="flex items-center gap-3">
+                                            <?php if (!empty($p['image']) && file_exists($p['image'])): ?>
+                                                <img src="<?php echo htmlspecialchars($p['image']); ?>"
+                                                    alt="<?php echo htmlspecialchars($p['name']); ?>"
+                                                    class="w-10 h-10 object-cover rounded-md border border-slate-200 flex-shrink-0">
+                                            <?php else: ?>
+                                                <span class="w-10 h-10 rounded-md bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-300 flex-shrink-0">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                                                    </svg>
+                                                </span>
+                                            <?php endif; ?>
+                                            <span><?php echo htmlspecialchars($p['name']); ?></span>
+                                        </div>
+                                    </td>
                                     <td class="p-4 text-slate-500 text-sm"><?php echo htmlspecialchars($p['sku'] ?? '—'); ?></td>
                                     <td class="p-4 text-slate-500 text-sm"><?php echo htmlspecialchars($p['category'] ?? '—'); ?></td>
                                     <td class="p-4 text-slate-800"><?php echo number_format($p['price'], 2); ?></td>

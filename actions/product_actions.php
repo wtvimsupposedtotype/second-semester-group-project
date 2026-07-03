@@ -56,6 +56,57 @@ $cost      = is_numeric($cost) ? (float) $cost : 0.0;
 $quantity  = (int) $quantity;
 $threshold = (int) $threshold;
 
+/*
+ * ---- Optional product picture ----
+ * Returns a web path like "assets/uploads/products/xxx.jpg" on success,
+ * or null if no (valid) file was uploaded. Files are stored relative to
+ * the project root so the same path works from any page.
+ */
+function handle_product_image()
+{
+    if (empty($_FILES['image']['name']) || $_FILES['image']['error'] === UPLOAD_ERR_NO_FILE) {
+        return null; // nothing uploaded
+    }
+    if ($_FILES['image']['error'] !== UPLOAD_ERR_OK) {
+        return null; // upload glitch — silently skip, keeps existing pic on edit
+    }
+
+    // Limit to 2 MB.
+    if ($_FILES['image']['size'] > 2 * 1024 * 1024) {
+        return null;
+    }
+
+    // Validate it's really an image, and pick a safe extension.
+    $allowed = [
+        'image/jpeg' => 'jpg',
+        'image/png'  => 'png',
+        'image/gif'  => 'gif',
+        'image/webp' => 'webp',
+    ];
+    $info = getimagesize($_FILES['image']['tmp_name']);
+    if ($info === false || !isset($allowed[$info['mime']])) {
+        return null; // not a real image
+    }
+    $ext = $allowed[$info['mime']];
+
+    $dir = __DIR__ . '/../assets/uploads/products';
+    if (!is_dir($dir)) {
+        mkdir($dir, 0775, true);
+    }
+
+    // Unique filename so uploads never overwrite each other.
+    $filename = 'prod_' . bin2hex(random_bytes(8)) . '.' . $ext;
+    $target   = $dir . '/' . $filename;
+
+    if (!move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
+        return null;
+    }
+
+    return 'assets/uploads/products/' . $filename;
+}
+
+$image_path = handle_product_image();
+
 // Empty SKU / category should be stored as NULL (so blanks don't clash
 // with the UNIQUE rule on sku, and empty categories stay clean).
 $sku      = ($sku === '') ? null : $sku;
@@ -63,10 +114,10 @@ $category = ($category === '') ? null : $category;
 
 if ($op === 'add') {
     $stmt = $conn->prepare(
-        "INSERT INTO products (name, sku, category, price, cost_price, quantity, low_stock_threshold)
-         VALUES (?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO products (name, sku, category, image, price, cost_price, quantity, low_stock_threshold)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
     );
-    $stmt->bind_param("sssddii", $name, $sku, $category, $price, $cost, $quantity, $threshold);
+    $stmt->bind_param("ssssddii", $name, $sku, $category, $image_path, $price, $cost, $quantity, $threshold);
 
     if ($stmt->execute()) {
         record_log($conn, "Added product: $name");
@@ -80,12 +131,23 @@ if ($op === 'add') {
 
 if ($op === 'update') {
     $id = (int) ($_POST['id'] ?? 0);
-    $stmt = $conn->prepare(
-        "UPDATE products
-         SET name = ?, sku = ?, category = ?, price = ?, cost_price = ?, quantity = ?, low_stock_threshold = ?
-         WHERE id = ?"
-    );
-    $stmt->bind_param("sssddiii", $name, $sku, $category, $price, $cost, $quantity, $threshold, $id);
+    if ($image_path !== null) {
+        // A new picture was uploaded — replace the stored one.
+        $stmt = $conn->prepare(
+            "UPDATE products
+             SET name = ?, sku = ?, category = ?, image = ?, price = ?, cost_price = ?, quantity = ?, low_stock_threshold = ?
+             WHERE id = ?"
+        );
+        $stmt->bind_param("ssssddiii", $name, $sku, $category, $image_path, $price, $cost, $quantity, $threshold, $id);
+    } else {
+        // No new picture — leave the existing image column untouched.
+        $stmt = $conn->prepare(
+            "UPDATE products
+             SET name = ?, sku = ?, category = ?, price = ?, cost_price = ?, quantity = ?, low_stock_threshold = ?
+             WHERE id = ?"
+        );
+        $stmt->bind_param("sssddiii", $name, $sku, $category, $price, $cost, $quantity, $threshold, $id);
+    }
 
     if ($stmt->execute()) {
         record_log($conn, "Updated product: $name");

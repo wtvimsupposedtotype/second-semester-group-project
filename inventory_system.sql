@@ -65,6 +65,7 @@ CREATE TABLE `products` (
   `name` varchar(100) NOT NULL,
   `sku` varchar(50) DEFAULT NULL,
   `category` varchar(50) DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL,
   `price` decimal(10,2) NOT NULL,
   `cost_price` decimal(10,2) DEFAULT 0.00,
   `quantity` int(11) NOT NULL,
