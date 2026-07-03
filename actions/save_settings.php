@@ -16,7 +16,11 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 }
 
 // Which settings the form is allowed to update
-$allowed = ['store_name', 'currency', 'address', 'tax_rate', 'low_stock_default'];
+$allowed = [
+    'store_name', 'currency', 'address', 'tax_rate', 'low_stock_default',
+    // WhatsApp / Twilio notification settings
+    'twilio_sid', 'twilio_token', 'twilio_whatsapp_from', 'notify_phone',
+];
 
 $stmt = $conn->prepare(
     "INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)

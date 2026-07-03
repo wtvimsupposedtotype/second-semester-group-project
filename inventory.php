@@ -43,20 +43,22 @@ if (isset($_GET['send_whatsapp'])) {
     }
 
     // --- Twilio credentials ---
-    // Loaded from includes/twilio_config.php, which is gitignored so the
-    // secrets never get committed. Copy twilio_config.example.php to
-    // twilio_config.php and fill in your values to enable WhatsApp alerts.
+    // Preferred source: the Settings page (stored in the settings table), so
+    // staff can configure WhatsApp without touching code. If a value is left
+    // blank in Settings, we fall back to includes/twilio_config.php (gitignored)
+    // when it exists — handy for a default sandbox setup shared by the team.
+    $twilio = [];
     $twilio_config_path = __DIR__ . '/includes/twilio_config.php';
-    if (!file_exists($twilio_config_path)) {
-        echo json_encode(['success' => false, 'error' => 'WhatsApp/Twilio is not configured. Create includes/twilio_config.php from the example file.']);
-        exit;
+    if (file_exists($twilio_config_path)) {
+        $twilio = require $twilio_config_path;
     }
-    $twilio = require $twilio_config_path;
-    $account_sid = $twilio['account_sid'] ?? '';
-    $auth_token  = $twilio['auth_token']  ?? '';
-    $from_number = $twilio['from_number'] ?? '';   // Twilio WhatsApp sandbox number
-    $to_number   = $twilio['to_number']   ?? '';   // number that joined the sandbox
-    $content_sid = $twilio['content_sid'] ?? '';   // optional Content Template SID
+
+    // Settings values win; config file fills any gaps.
+    $account_sid = get_setting($conn, 'twilio_sid', '')          ?: ($twilio['account_sid'] ?? '');
+    $auth_token  = get_setting($conn, 'twilio_token', '')        ?: ($twilio['auth_token']  ?? '');
+    $from_number = get_setting($conn, 'twilio_whatsapp_from', '') ?: ($twilio['from_number'] ?? '');
+    $to_number   = get_setting($conn, 'notify_phone', '')        ?: ($twilio['to_number']   ?? '');
+    $content_sid = $twilio['content_sid'] ?? ''; // optional Content Template SID
 
     if (empty($account_sid) || empty($auth_token) || empty($from_number) || empty($to_number)) {
         echo json_encode(['success' => false, 'error' => 'WhatsApp/Twilio is not configured yet. Set it up on the Settings page.']);
