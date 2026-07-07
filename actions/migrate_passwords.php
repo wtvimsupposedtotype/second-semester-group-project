@@ -1,18 +1,18 @@
 <?php
 /*
- * ONE-TIME USE SCRIPT.
- * This finds any PLAIN-TEXT passwords in your users table and replaces
- * them with secure hashes. It is safe to run more than once (it skips
- * passwords that are already hashed).
- *
- * HOW TO USE:
- *   1. Log in as an admin first.
- *   2. Open this in your browser:
- *      http://localhost/inventory-system/actions/migrate_passwords.php
- *   3. Read the result message.
- *
- * Safe to keep: only a logged-in admin can run it, and it skips any
- * password that is already hashed (so it never double-hashes).
+  ONE-TIME USE SCRIPT.
+  This finds any PLAIN-TEXT passwords in your users table and replaces
+  them with secure hashes. It is safe to run more than once (it skips
+  passwords that are already hashed).
+ 
+  HOW TO USE:
+    1. Log in as an admin first.
+    2. Open this in your browser:
+       http://localhost/inventory-system/actions/migrate_passwords.php
+    3. Read the result message.
+ 
+  Safe to keep: only a logged-in admin can run it, and it skips any
+  password that is already hashed (so it never double-hashes).
  */
 
 include '../includes/db.php';

@@ -1,17 +1,17 @@
 <?php
 /*
- * Page protection helper.
- *
- * Put this ONE line at the very top of any page that should be private,
- * right after `include 'includes/db.php';`:
- *
- *     include 'includes/auth.php';
- *     require_login();            // any logged-in user (admin or cashier)
- *     require_login('admin');     // admins only
- *
- * If the visitor isn't allowed, they get bounced back to the login page
- * BEFORE any of the page's content is sent. (db.php already started the
- * session, so $_SESSION is available here.)
+  Page protection helper.
+ 
+  Put this ONE line at the very top of any page that should be private,
+  right after `include 'includes/db.php';`:
+ 
+      include 'includes/auth.php';
+      require_login();            // any logged-in user (admin or cashier)
+      require_login('admin');     // admins only
+ 
+  If the visitor isn't allowed, they get bounced back to the login page
+  BEFORE any of the page's content is sent. (db.php already started the
+  session, so $_SESSION is available here.)
  */
 
 function require_login($required_role = null)

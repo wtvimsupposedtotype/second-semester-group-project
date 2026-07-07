@@ -4,12 +4,12 @@ include 'includes/auth.php';
 include 'includes/settings.php';
 require_login(); // must be logged in to use the POS
 
-/**
- * --- Invoice view ---
- * Visiting billing.php?invoice=SALE_ID renders a printable invoice page
- * and stops, instead of the POS page. No external PDF library needed:
- * the page auto-opens the browser's print dialog, and choosing
- * "Save as PDF" as the destination produces a real PDF.
+/*
+  --- Invoice view ---
+  Visiting billing.php?invoice=SALE_ID renders a printable invoice page
+  and stops, instead of the POS page. No external PDF library needed:
+  the page auto-opens the browser's print dialog, and choosing
+  "Save as PDF" as the destination produces a real PDF.
  */
 if (isset($_GET['invoice'])) {
     $sale_id = (int) $_GET['invoice'];

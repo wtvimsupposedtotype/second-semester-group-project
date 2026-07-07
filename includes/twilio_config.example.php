@@ -1,12 +1,12 @@
 <?php
-/**
- * Twilio credentials TEMPLATE.
- *
- * Setup:
- *   1. Copy this file to `twilio_config.php` (same folder).
- *   2. Fill in your own values from https://console.twilio.com.
- *
- * twilio_config.php is gitignored, so your real secrets never get pushed.
+/*
+  Twilio credentials TEMPLATE.
+ 
+  Setup:
+    1. Copy this file to `twilio_config.php` (same folder).
+    2. Fill in your own values from https://console.twilio.com.
+ 
+  twilio_config.php is gitignored, so your real secrets never get pushed.
  */
 return [
     'account_sid' => 'YOUR_ACCOUNT_SID',

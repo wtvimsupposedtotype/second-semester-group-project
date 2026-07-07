@@ -1,14 +1,14 @@
 <?php
 /*
- * Settings helper.
- *
- * Load everything at once:
- *     include 'includes/settings.php';
- *     $settings = get_settings($conn);
- *     echo $settings['store_name'];
- *
- * Or grab a single value (with a fallback if it's missing):
- *     $tax = get_setting($conn, 'tax_rate', '0');
+  Settings helper.
+ 
+  Load everything at once:
+      include 'includes/settings.php';
+      $settings = get_settings($conn);
+      echo $settings['store_name'];
+ 
+  Or grab a single value (with a fallback if it's missing):
+      $tax = get_setting($conn, 'tax_rate', '0');
  */
 
 function get_settings($conn)

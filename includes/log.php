@@ -1,12 +1,12 @@
 <?php
 /*
- * Audit-trail helper.
- *
- * Call this whenever something noteworthy happens, e.g.:
- *     include 'includes/log.php';
- *     record_log($conn, "Added product: Standard Mouse");
- *
- * If you don't pass a user id, it uses the logged-in user automatically.
+  Audit-trail helper.
+ 
+  Call this whenever something noteworthy happens, e.g.:
+      include 'includes/log.php';
+      record_log($conn, "Added product: Standard Mouse");
+ 
+  If you don't pass a user id, it uses the logged-in user automatically.
  */
 
 function record_log($conn, $action, $user_id = null)

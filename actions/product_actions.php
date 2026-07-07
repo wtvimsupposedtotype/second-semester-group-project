@@ -1,8 +1,8 @@
 <?php
 /*
- * Handles adding, editing, and deleting products.
- * Every branch uses prepared statements (safe from SQL injection) and
- * redirects back to inventory.php with a small status message.
+  Handles adding, editing, and deleting products.
+  Every branch uses prepared statements (safe from SQL injection) and
+  redirects back to inventory.php with a small status message.
  */
 
 include '../includes/db.php';
@@ -57,10 +57,10 @@ $quantity  = (int) $quantity;
 $threshold = (int) $threshold;
 
 /*
- * ---- Optional product picture ----
- * Returns a web path like "assets/uploads/products/xxx.jpg" on success,
- * or null if no (valid) file was uploaded. Files are stored relative to
- * the project root so the same path works from any page.
+  ---- Optional product picture ----
+  Returns a web path like "assets/uploads/products/xxx.jpg" on success,
+  or null if no (valid) file was uploaded. Files are stored relative to
+  the project root so the same path works from any page.
  */
 function handle_product_image()
 {

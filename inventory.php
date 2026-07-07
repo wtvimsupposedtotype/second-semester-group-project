@@ -4,29 +4,29 @@ include 'includes/auth.php';
 include 'includes/settings.php';
 require_login(); // must be logged in to view inventory
 
-/**
- * --- WhatsApp alert sender (AJAX) ---
- * The "Notify" buttons on this page POST to inventory.php?send_whatsapp=1
- * with a JSON body, and this sends via Twilio's REST API (no SDK/Composer
- * needed, just PHP's built-in curl), then returns JSON and stops before
- * any HTML renders.
- *
- * Two ways it can send, chosen automatically:
- *   1. Plain text message (default) — works immediately in the sandbox.
- *   2. Content Template — used only if you've set a Template SID on the
- *      Settings page. Templates are pre-approved layouts you design once
- *      in Twilio Console -> Content Editor, with numbered placeholders
- *      like {{1}}, {{2}}, {{3}}. This code maps:
- *          {{1}} -> product name
- *          {{2}} -> quantity remaining
- *          {{3}} -> reorder threshold
- *      If your template uses different placeholders/order, adjust the
- *      $content_variables array below to match.
- *
- * One-time setup: sign up free at https://www.twilio.com/try-twilio,
- * get a WhatsApp Sandbox number + join code from Console -> Messaging ->
- * Try it out -> Send a WhatsApp message, join it from your WhatsApp, then
- * enter your Account SID / Auth Token / numbers on the Settings page.
+/*
+  --- WhatsApp alert sender (AJAX) ---
+  The "Notify" buttons on this page POST to inventory.php?send_whatsapp=1
+  with a JSON body, and this sends via Twilio's REST API (no SDK/Composer
+  needed, just PHP's built-in curl), then returns JSON and stops before
+  any HTML renders.
+ 
+  Two ways it can send, chosen automatically:
+    1. Plain text message (default) — works immediately in the sandbox.
+    2. Content Template — used only if you've set a Template SID on the
+       Settings page. Templates are pre-approved layouts you design once
+       in Twilio Console -> Content Editor, with numbered placeholders
+       like {{1}}, {{2}}, {{3}}. This code maps:
+           {{1}} -> product name
+           {{2}} -> quantity remaining
+           {{3}} -> reorder threshold
+       If your template uses different placeholders/order, adjust the
+       $content_variables array below to match.
+ 
+  One-time setup: sign up free at https://www.twilio.com/try-twilio,
+  get a WhatsApp Sandbox number + join code from Console -> Messaging ->
+  Try it out -> Send a WhatsApp message, join it from your WhatsApp, then
+  enter your Account SID / Auth Token / numbers on the Settings page.
  */
 if (isset($_GET['send_whatsapp'])) {
     header('Content-Type: application/json');

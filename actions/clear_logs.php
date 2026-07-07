@@ -1,7 +1,7 @@
 <?php
 /*
- * Clears all audit-trail logs. Admin-only.
- * (Writes one fresh log entry afterwards so there's a record that it happened.)
+  Clears all audit-trail logs. Admin-only.
+  (Writes one fresh log entry afterwards so there's a record that it happened.)
  */
 
 include '../includes/db.php';

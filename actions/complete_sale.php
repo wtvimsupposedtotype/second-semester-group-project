@@ -1,16 +1,16 @@
 <?php
 /*
- * Completes a sale.
- *
- * Receives the cart as JSON: { "items": [ { "id": 1, "qty": 2 }, ... ] }
- *
- * Safety rules baked in:
- *  - Prices are read from the DATABASE, never from the browser (a user could
- *    tamper with the page and try to pay 1 rupee otherwise).
- *  - Stock is checked before selling; if any item is short, the whole sale
- *    is rejected.
- *  - Everything runs in a TRANSACTION: either the sale + all line items +
- *    all stock updates succeed together, or nothing changes at all.
+  Completes a sale.
+ 
+  Receives the cart as JSON: { "items": [ { "id": 1, "qty": 2 }, ... ] }
+ 
+  Safety rules:
+   - Prices are read from the DATABASE, never from the browser (a user could
+     tamper with the page and try to pay 1 rupee otherwise).
+   - Stock is checked before selling; if any item is short, the whole sale
+     is rejected.
+   - Everything runs in a TRANSACTION: either the sale + all line items +
+     all stock updates succeed together, or nothing changes at all.
  */
 
 include '../includes/db.php';

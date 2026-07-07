@@ -1,8 +1,8 @@
 <?php
 /*
- * Saves the Settings form. Admin-only.
- * Only keys in the allow-list below can be written, so the form can't be
- * tricked into setting arbitrary values.
+  Saves the Settings form. Admin-only.
+  Only keys in the allow-list below can be written, so the form can't be
+  tricked into setting arbitrary values.
  */
 
 include '../includes/db.php';
@@ -17,9 +17,16 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
 // Which settings the form is allowed to update
 $allowed = [
-    'store_name', 'currency', 'address', 'tax_rate', 'low_stock_default',
+    'store_name',
+    'currency',
+    'address',
+    'tax_rate',
+    'low_stock_default',
     // WhatsApp / Twilio notification settings
-    'twilio_sid', 'twilio_token', 'twilio_whatsapp_from', 'notify_phone',
+    'twilio_sid',
+    'twilio_token',
+    'twilio_whatsapp_from',
+    'notify_phone',
 ];
 
 $stmt = $conn->prepare(
